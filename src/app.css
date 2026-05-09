@@ -3,35 +3,51 @@
   src: url('/ILGlyphsEx.woff') format('woff');
 }
 
+/* ─── FL Studio dark skin (default) ─────────────────────────────────────── */
 :root {
-  --bg: #1a1a1e;
-  --surface: #1a1a1e;
-  --row-bg: #2a2a2f;
-  --category-bg: #25351e;
-  --input-bg: #1a1a1e;
-  --border: #3a3a42;
-  --hover: #33333a;
-  --text: #e8e8ec;
-  --text-muted: #8a9888;
-  --accent: #0ba64b;
-  --accent-hover: #48aa71;
-  --danger: #c0524a;
-  --danger-hover: #d4625a;
-  --success: #4aab72;
+  --bg: #1e1e1e;
+  --surface: #252525;
+  --row-bg: #2d2d2d;
+  --category-bg: #4c4136;
+  --input-bg: #191919;
+  --border: #3e3e3e;
+  --hover: #363636;
+  --text: #c8c8c8;
+  --text-muted: #686868;
+  --accent: #d96f00;
+  --accent-hover: #e88010;
+  --danger: #b83838;
+  --danger-hover: #cc4444;
+
+  /* window chrome */
+  --title-bg: #161616;
+  --toolbar-bg: #212121;
+
+  /* secondary button tones (need explicit values for bevel look) */
+  --btn-bg: #383838;
+  --btn-border-t: #505050;
+  --btn-border-b: #282828;
 }
 
+/* ─── FL Studio classic silver skin ─────────────────────────────────────── */
 [data-theme="light"] {
-  --bg: #f2f2f5;
-  --surface: #ffffff;
-  --row-bg: #ffffff;
-  --category-bg: #a7ee886f;
-  --input-bg: #f2f2f5;
-  --border: #ccccd8;
-  --hover: #e4e4ec;
-  --text: #1a1a1e;
-  --text-muted: #607a60;
+  --bg: #bebebe;
+  --surface: #d0d0d0;
+  --row-bg: #c8c8c8;
+  --category-bg: #d2b9a0;
+  --input-bg: #b8b8b8;
+  --border: #969696;
+  --hover: #b4b4b4;
+  --text: #1a1a1a;
+  --text-muted: #505050;
+  --title-bg: #a8a8a8;
+  --toolbar-bg: #bababa;
+  --btn-bg: #c8c8c8;
+  --btn-border-t: #dcdcdc;
+  --btn-border-b: #909090;
 }
 
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -46,13 +62,14 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: system-ui, -apple-system, sans-serif;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 #app {
   min-height: 100vh;
 }
 
+/* ─── Base button ────────────────────────────────────────────────────────── */
 button {
   font-family: inherit;
   font-size: inherit;
@@ -61,16 +78,21 @@ button {
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.45;
+  opacity: 0.38;
 }
 
+/* ─── FL Studio-style button classes ─────────────────────────────────────── */
 .btn-primary {
   background: var(--accent);
   color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 0.45rem 1rem;
-  font-size: 0.9rem;
+  border: 1px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.18);
+  border-bottom-color: rgba(0, 0, 0, 0.35);
+  border-radius: 2px;
+  padding: 0.42rem 1rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -78,27 +100,32 @@ button:disabled {
 }
 
 .btn-secondary {
-  background: none;
+  background: var(--btn-bg);
   color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 0.45rem 1rem;
-  font-size: 0.9rem;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--btn-border-t) var(--border) var(--btn-border-b) var(--border);
+  border-radius: 2px;
+  padding: 0.42rem 1rem;
+  font-size: 0.86rem;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background: var(--hover);
 }
 
 .btn-danger {
   background: var(--danger);
   color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 0.45rem 1rem;
-  font-size: 0.9rem;
+  border: 1px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.15);
+  border-bottom-color: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  padding: 0.42rem 1rem;
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
-.btn-danger:hover {
+.btn-danger:hover:not(:disabled) {
   background: var(--danger-hover);
 }

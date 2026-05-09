@@ -35,24 +35,26 @@
   dialog {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1.5rem;
+    border-radius: 3px;
+    padding: 1.25rem 1.25rem 1rem;
     max-width: 320px;
     width: 90%;
   }
 
   dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
   }
 
   p {
-    margin: 0 0 1.25rem;
+    margin: 0 0 1.1rem;
     color: var(--text);
+    font-size: 0.88rem;
+    line-height: 1.5;
   }
 
   .actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     justify-content: flex-end;
   }
 </style>

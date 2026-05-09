@@ -26,8 +26,11 @@ function loadFromStorage(): Preset[] {
   }
 }
 
+
 class PresetsState {
   presets: Preset[] = $state(loadFromStorage());
+  // Index of the most recently edited row — drives the "last edited" indicator.
+  lastEditedIndex: number | null = $state(null);
   copied: boolean = $state(false);
 
   draggingIndex: number | null = $state(null);
@@ -38,6 +41,7 @@ class PresetsState {
 
   load(presets: Preset[]) {
     this.presets = presets;
+    this.lastEditedIndex = null;
   }
 
   async copy() {
@@ -58,10 +62,16 @@ class PresetsState {
 
   updatePreset(index: number, updated: Preset) {
     this.presets = this.presets.map((p, i) => (i === index ? updated : p));
+    this.lastEditedIndex = index;
   }
 
   deletePreset(index: number) {
     this.presets = this.presets.filter((_, i) => i !== index);
+    if (this.lastEditedIndex === index) {
+      this.lastEditedIndex = null;
+    } else if (this.lastEditedIndex !== null && this.lastEditedIndex > index) {
+      this.lastEditedIndex -= 1;
+    }
   }
 
   dragStart(i: number, e: DragEvent) {
@@ -88,10 +98,12 @@ class PresetsState {
     const from = parseInt(e.dataTransfer!.getData('text/plain'), 10);
     if (!isNaN(from)) {
       const rawInsert = this.dragOverPosition === 'before' ? i : i + 1;
+      const insertAt = from < rawInsert ? rawInsert - 1 : rawInsert;
       const next = [...this.presets];
       const [item] = next.splice(from, 1);
-      next.splice(from < rawInsert ? rawInsert - 1 : rawInsert, 0, item);
+      next.splice(insertAt, 0, item);
       this.presets = next;
+      this.lastEditedIndex = insertAt;
     }
     this.draggingIndex = null;
     this.dragOverIndex = null;

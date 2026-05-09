@@ -74,7 +74,10 @@
   onclick={(e) => { if (e.target === dialogEl) onclose(); }}
 >
   <header>
-    <h2>Quick Start</h2>
+    <div class="dialog-title">
+      <span class="dialog-accent" aria-hidden="true"></span>
+      <h2>Quick Start</h2>
+    </div>
     <button class="close-btn" aria-label="Close" onclick={onclose}>✕</button>
   </header>
 
@@ -98,7 +101,7 @@
     <ul class="defaults-grid" role="list">
       {#each DEFAULT_PRESET_LISTS as list}
         <li>
-          <button class="default-card btn-secondary" onclick={() => handleDefault(list)}>
+          <button class="default-card" onclick={() => handleDefault(list)}>
             <span class="card-label">{list.label}</span>
             <span class="card-desc">{list.description}</span>
             <span class="card-count">{list.presets.length} presets</span>
@@ -127,84 +130,108 @@
   dialog {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 3px;
     padding: 0;
-    width: min(560px, 92vw);
+    width: min(540px, 93vw);
     max-height: 90vh;
     overflow-y: auto;
     color: var(--text);
   }
 
   dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.65);
   }
 
   header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 1.5rem 0;
+    padding: 0.6rem 1rem;
+    background: var(--title-bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dialog-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  /* Mirrors the app title bar's orange accent mark */
+  .dialog-accent {
+    display: block;
+    width: 3px;
+    height: 1.2rem;
+    background: var(--accent);
+    border-radius: 1px;
+    flex-shrink: 0;
   }
 
   h2 {
     margin: 0;
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
   h3 {
-    margin: 0 0 0.4rem;
-    font-size: 0.8rem;
+    margin: 0 0 0.35rem;
+    font-size: 0.68rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--text-muted);
   }
 
   .close-btn {
     background: none;
-    border: none;
+    border: 1px solid transparent;
+    border-radius: 2px;
     color: var(--text-muted);
-    font-size: 1rem;
-    padding: 0.25rem 0.4rem;
-    border-radius: 4px;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
     line-height: 1;
   }
 
   .close-btn:hover {
     color: var(--text);
+    border-color: var(--border);
     background: var(--hover);
   }
 
   .paste-section,
   .defaults-section {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.1rem;
   }
 
   .section-hint {
-    margin: 0 0 0.85rem;
-    font-size: 0.85rem;
+    margin: 0 0 0.7rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
+    line-height: 1.45;
   }
 
   .paste-btn {
-    font-size: 0.9rem;
-    padding: 0.55rem 1.1rem;
+    font-size: 0.86rem;
+    padding: 0.42rem 1rem;
   }
 
   .error-msg {
-    margin: 0.6rem 0 0;
-    font-size: 0.85rem;
+    margin: 0.55rem 0 0;
+    font-size: 0.8rem;
     color: var(--danger);
   }
 
   .divider {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0 1.5rem;
-    font-size: 0.8rem;
+    gap: 0.6rem;
+    padding: 0 1.1rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
   .divider::before,
@@ -221,7 +248,7 @@
     padding: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .default-card {
@@ -229,33 +256,49 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.2rem;
-    padding: 0.7rem 0.9rem;
+    gap: 0.15rem;
+    padding: 0.55rem 0.75rem;
     text-align: left;
+    background: var(--btn-bg);
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--btn-border-t) var(--border) var(--btn-border-b) var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.08s, border-color 0.08s;
+  }
+
+  .default-card:hover {
+    background: var(--hover);
+    border-color: var(--accent);
   }
 
   .card-label {
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
   .card-desc {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
     line-height: 1.3;
   }
 
   .card-count {
-    font-size: 0.75rem;
+    font-size: 0.68rem;
     color: var(--accent);
     margin-top: 0.1rem;
+    font-weight: 600;
   }
 
   footer {
     display: flex;
     justify-content: flex-end;
-    padding: 1rem 1.5rem 1.25rem;
+    padding: 0.65rem 1.1rem;
     border-top: 1px solid var(--border);
+    background: var(--toolbar-bg);
   }
 
   .sr-only {

@@ -11,7 +11,7 @@
 </script>
 
 <button
-  class="btn-secondary reset-btn"
+  class="btn-secondary"
   disabled={presetsState.presets.length === 0}
   onclick={() => (confirmOpen = true)}
 >
@@ -27,10 +27,3 @@
     oncancel={() => (confirmOpen = false)}
   />
 {/if}
-
-<style>
-  .reset-btn {
-    font-size: 0.95rem;
-    padding: 0.6rem 1.25rem;
-  }
-</style>
