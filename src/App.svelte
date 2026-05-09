@@ -1,6 +1,6 @@
 <script lang="ts">
   import { presetsState } from './state/presets.svelte';
-  import PasteButton from './components/PasteButton.svelte';
+  import QuickStartButton from './components/QuickStartButton.svelte';
   import PresetLine from './components/PresetLine.svelte';
   import ThemeToggle from './components/ThemeToggle.svelte';
 </script>
@@ -15,7 +15,7 @@
   </header>
 
   <div class="toolbar top">
-    <PasteButton />
+    <QuickStartButton />
   </div>
 
   {#if presetsState.presets.length > 0}

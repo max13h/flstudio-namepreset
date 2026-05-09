@@ -1,9 +1,8 @@
 import type { Preset } from '../types';
-import { parse, serialize, isValidPresetText } from '../utils/parser';
+import { serialize } from '../utils/parser';
 
 class PresetsState {
   presets: Preset[] = $state([]);
-  error: string = $state('');
   copied: boolean = $state(false);
 
   draggingIndex: number | null = $state(null);
@@ -12,20 +11,8 @@ class PresetsState {
 
   private copyTimer: ReturnType<typeof setTimeout> | null = null;
 
-  async paste() {
-    this.error = '';
-    let text: string;
-    try {
-      text = await navigator.clipboard.readText();
-    } catch {
-      this.error = 'Could not read clipboard. Make sure the page has clipboard permission.';
-      return;
-    }
-    if (!isValidPresetText(text)) {
-      this.error = 'Clipboard content does not look like a valid NamePreset file.';
-      return;
-    }
-    this.presets = parse(text);
+  load(presets: Preset[]) {
+    this.presets = presets;
   }
 
   async copy() {
@@ -36,7 +23,7 @@ class PresetsState {
       if (this.copyTimer) clearTimeout(this.copyTimer);
       this.copyTimer = setTimeout(() => (this.copied = false), 2000);
     } catch {
-      this.error = 'Could not write to clipboard.';
+      // clipboard write failed silently; Copy output button stays as-is
     }
   }
 

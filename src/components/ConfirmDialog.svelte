@@ -3,11 +3,13 @@
 
   interface Props {
     message: string;
+    confirmLabel?: string;
+    confirmClass?: string;
     onconfirm: () => void;
     oncancel: () => void;
   }
 
-  let { message, onconfirm, oncancel }: Props = $props();
+  let { message, confirmLabel = 'Delete', confirmClass = 'btn-danger', onconfirm, oncancel }: Props = $props();
 
   let dialogEl: HTMLDialogElement;
 
@@ -25,7 +27,7 @@
   <p>{message}</p>
   <div class="actions">
     <button class="btn-secondary" onclick={oncancel}>Cancel</button>
-    <button class="btn-danger" onclick={onconfirm}>Delete</button>
+    <button class={confirmClass} onclick={onconfirm}>{confirmLabel}</button>
   </div>
 </dialog>
 
