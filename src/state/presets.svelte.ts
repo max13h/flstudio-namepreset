@@ -1,8 +1,33 @@
 import type { Preset } from '../types';
 import { serialize } from '../utils/parser';
 
+const STORAGE_KEY = 'flstudio-namepreset';
+
+function isValidPreset(p: unknown): p is Preset {
+  return (
+    typeof p === 'object' &&
+    p !== null &&
+    typeof (p as Preset).name === 'string' &&
+    typeof (p as Preset).color === 'number' &&
+    typeof (p as Preset).icon === 'number' &&
+    typeof (p as Preset).isCategory === 'boolean'
+  );
+}
+
+function loadFromStorage(): Preset[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(isValidPreset);
+  } catch {
+    return [];
+  }
+}
+
 class PresetsState {
-  presets: Preset[] = $state([]);
+  presets: Preset[] = $state(loadFromStorage());
   copied: boolean = $state(false);
 
   draggingIndex: number | null = $state(null);
@@ -81,3 +106,11 @@ class PresetsState {
 }
 
 export const presetsState = new PresetsState();
+
+// Reactively persist to localStorage whenever presets change.
+// $effect.root keeps this alive for the entire app lifetime.
+$effect.root(() => {
+  $effect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(presetsState.presets));
+  });
+});
