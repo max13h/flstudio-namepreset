@@ -1,6 +1,7 @@
 <script lang="ts">
   import { presetsState } from './state/presets.svelte';
   import QuickStartButton from './components/QuickStartButton.svelte';
+  import ResetButton from './components/ResetButton.svelte';
   import PresetLine from './components/PresetLine.svelte';
   import ThemeToggle from './components/ThemeToggle.svelte';
 </script>
@@ -16,6 +17,7 @@
 
   <div class="toolbar top">
     <QuickStartButton />
+    <ResetButton />
   </div>
 
   {#if presetsState.presets.length > 0}
