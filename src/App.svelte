@@ -1,89 +1,173 @@
-<script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from './assets/vite.svg'
-  import heroImg from './assets/hero.png'
-  import Counter from './lib/Counter.svelte'
+<script lang="ts">
+  import { presetsState } from './state/presets.svelte';
+  import PasteButton from './components/PasteButton.svelte';
+  import PresetLine from './components/PresetLine.svelte';
+  import ThemeToggle from './components/ThemeToggle.svelte';
 </script>
 
-<section id="center">
-  <div class="hero">
-    <img src={heroImg} class="base" width="170" height="179" alt="" />
-    <img src={svelteLogo} class="framework" alt="Svelte logo" />
-    <img src={viteLogo} class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/App.svelte</code> and save to test <code>HMR</code></p>
-  </div>
-  <Counter />
-</section>
+<main>
+  <header>
+    <div>
+      <h1>NamePreset Editor for FL Studio</h1>
+      <p class="subtitle">Paste your NamePreset file content, edit, then copy it back.</p>
+    </div>
+    <ThemeToggle />
+  </header>
 
-<div class="ticks"></div>
-
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#documentation-icon"></use>
-    </svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank" rel="noreferrer">
-          <img class="logo" src={viteLogo} alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://svelte.dev/" target="_blank" rel="noreferrer">
-          <img class="button-icon" src={svelteLogo} alt="" />
-          Learn more
-        </a>
-      </li>
-    </ul>
+  <div class="toolbar top">
+    <PasteButton />
   </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#social-icon"></use>
-    </svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li>
-        <a href="https://github.com/vitejs/vite" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#github-icon"></use>
-          </svg>
-          GitHub
-        </a>
-      </li>
-      <li>
-        <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#discord-icon"></use>
-          </svg>
-          Discord
-        </a>
-      </li>
-      <li>
-        <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#x-icon"></use>
-          </svg>
-          X.com
-        </a>
-      </li>
-      <li>
-        <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#bluesky-icon"></use>
-          </svg>
-          Bluesky
-        </a>
-      </li>
-    </ul>
-  </div>
-</section>
 
-<div class="ticks"></div>
-<section id="spacer"></section>
+  {#if presetsState.presets.length > 0}
+    <div class="list-header" aria-hidden="true">
+      <span></span>
+      <span class="col-index">#</span>
+      <span class="col-cat">Cat</span>
+      <span class="col-name">Name</span>
+      <span class="col-color">Color</span>
+      <span class="col-icon">Icon</span>
+      <span class="col-del"></span>
+    </div>
+
+    <div class="preset-list" role="list">
+      {#each presetsState.presets as preset, i (i)}
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div
+          class="drag-wrapper"
+          class:is-dragging={presetsState.draggingIndex === i}
+          class:drag-over-before={presetsState.dragOverIndex === i && presetsState.draggingIndex !== i && presetsState.dragOverPosition === 'before'}
+          class:drag-over-after={presetsState.dragOverIndex === i && presetsState.draggingIndex !== i && presetsState.dragOverPosition === 'after'}
+          role="listitem"
+          ondragstart={(e) => presetsState.dragStart(i, e)}
+          ondragover={(e) => presetsState.dragOver(i, e)}
+          ondrop={(e) => presetsState.drop(i, e)}
+          ondragend={() => presetsState.dragEnd()}
+        >
+          <PresetLine
+            {preset}
+            index={i}
+            onchange={(updated) => presetsState.updatePreset(i, updated)}
+            ondelete={() => presetsState.deletePreset(i)}
+          />
+        </div>
+      {/each}
+    </div>
+  {:else}
+    <div class="empty-state">
+      <p>No presets loaded. Paste a NamePreset file to get started.</p>
+    </div>
+  {/if}
+
+  <div class="toolbar bottom">
+    <button class="btn-secondary add-btn" onclick={() => presetsState.addLine()}>+ Add line</button>
+    {#if presetsState.presets.length > 0}
+      <button class="btn-primary copy-btn" onclick={() => presetsState.copy()}>
+        {presetsState.copied ? 'Copied!' : 'Copy output'}
+      </button>
+    {/if}
+  </div>
+</main>
+
+<style>
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    margin: 0 0 0.4rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .subtitle {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .toolbar.bottom {
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+
+  .copy-btn {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.25rem;
+    min-width: 130px;
+    transition: background 0.15s;
+  }
+
+  .list-header {
+    display: grid;
+    grid-template-columns: 1.5rem 2rem 3rem 1fr 2.5rem 3.5rem 2.5rem;
+    gap: 0.5rem;
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .col-index { text-align: right; }
+
+  .preset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .drag-wrapper {
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.05s, opacity 0.08s;
+  }
+
+  .drag-wrapper.is-dragging {
+    opacity: 0.35;
+  }
+
+  .drag-wrapper.drag-over-before {
+    border-top-color: var(--accent);
+  }
+
+  .drag-wrapper.drag-over-after {
+    border-bottom-color: var(--accent);
+  }
+
+  .empty-state {
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .empty-state p {
+    margin: 0;
+  }
+
+  .add-btn {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.25rem;
+  }
+</style>
